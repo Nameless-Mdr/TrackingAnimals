@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.Location;
 
+[Table("locations", Schema = "info")]
 public class Location
 {
     [Column("id")]
@@ -13,4 +13,7 @@ public class Location
 
     [Column("longitude")] 
     public double Longitude { get; set; }
+    
+    
+    public virtual ICollection<Animal.Animal>? Animals { get; set; }
 }

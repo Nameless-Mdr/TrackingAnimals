@@ -10,7 +10,7 @@ namespace Tracking.Controllers;
 [Route("api/[controller]/[action]")]
 [ApiController]
 [Authorize]
-public class LocationsController : Controller
+public class LocationsController : ControllerBase
 {
     private readonly ILocationService _locationService;
 
@@ -29,14 +29,21 @@ public class LocationsController : Controller
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Location>> GetAllLocations()
+    public async Task<IEnumerable<GetLocationModel>> GetAllLocations()
     {
-        return await _locationService.GetAllModels();
+        var locations = await _locationService.GetAllModels();
+        return locations.Select(x => _mapper.Map<GetLocationModel>(x));
     }
 
     [HttpPut]
-    public async Task<int> UpdateLocation(Location location)
+    public async Task<int> UpdateLocation([FromForm] GetLocationModel model)
     {
+        var location = new Location()
+        {
+            Id = model.Id,
+            Latitude = model.Latitude,
+            Longitude = model.Longitude
+        };
         return await _locationService.Update(location);
     }
 

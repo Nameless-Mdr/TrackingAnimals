@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.User;
 
+[Table("users", Schema = "auth")]
 public class User
 {
     [Column("id")]
@@ -22,4 +22,6 @@ public class User
     
     
     public virtual ICollection<UserSession>? Sessions { get; set; }
+    
+    public virtual ICollection<Animal.Animal>? Animals { get; set; }
 }

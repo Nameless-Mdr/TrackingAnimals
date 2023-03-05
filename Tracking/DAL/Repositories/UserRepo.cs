@@ -31,15 +31,15 @@ public class UserRepo : IUserRepo
     {
         var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == entity.Id);
 
-        if (user != null)
-        {
-            user.FirstName = entity.FirstName;
-            user.LastName = entity.LastName;
-            user.Email = entity.Email;
-            user.PasswordHash = entity.PasswordHash;
+        if (user == null)
+            throw new Exception("User with such id not found");
 
-            await _context.SaveChangesAsync();
-        }
+        user.FirstName = entity.FirstName;
+        user.LastName = entity.LastName;
+        user.Email = entity.Email;
+        user.PasswordHash = entity.PasswordHash;
+
+        await _context.SaveChangesAsync();
 
         return entity.Id;
     }

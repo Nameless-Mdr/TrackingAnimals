@@ -2,13 +2,14 @@
 
 namespace Domain.Entity.User;
 
+[Table("user_session", Schema = "auth")]
 public class UserSession
 {
     [Column("id")]
     public Guid Id { get; set; }
 
     [Column("user_id")]
-    public int? UserId { get; set; }
+    public int UserId { get; set; }
 
     [Column("refresh_token")]
     public Guid RefreshToken { get; set; }
@@ -20,5 +21,6 @@ public class UserSession
     public bool IsActive { get; set; } = true;
 
 
+    [ForeignKey($"{nameof(UserId)}")]
     public virtual User User { get; set; } = null!;
 }

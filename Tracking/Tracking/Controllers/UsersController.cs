@@ -42,9 +42,8 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<GetUserModel>> GetAllUsers()
     {
-        var response = await _userService.GetAllModels();
-        
-        return response.Select(item => _mapper.Map<GetUserModel>(item));
+        var users = await _userService.GetAllModels();
+        return users.Select(item => _mapper.Map<GetUserModel>(item));
     }
 
     [HttpPut]
