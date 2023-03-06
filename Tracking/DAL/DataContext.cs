@@ -63,4 +63,6 @@ public class DataContext : DbContext
     public DbSet<Animal> Animals => Set<Animal>();
 
     public DbSet<Type> Types => Set<Type>();
+
+    public DbSet<VisitLocation> VisitLocations => Set<VisitLocation>();
 }

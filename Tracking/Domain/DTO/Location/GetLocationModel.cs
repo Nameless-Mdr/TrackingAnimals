@@ -1,10 +1,6 @@
 ﻿namespace Domain.DTO.Location;
 
-public class GetLocationModel
+public class GetLocationModel : CreateLocationModel
 {
     public long Id { get; set; }
-    
-    public double Latitude { get; set; }
-
-    public double Longitude { get; set; }
 }

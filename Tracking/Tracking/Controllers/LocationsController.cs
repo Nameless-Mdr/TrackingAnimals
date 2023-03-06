@@ -23,7 +23,7 @@ public class LocationsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<long> CreateLocation(CreateLocationModel model)
+    public async Task<long> CreateLocation([FromForm] CreateLocationModel model)
     {
         return await _locationService.Create(_mapper.Map<Location>(model));
     }
@@ -48,7 +48,7 @@ public class LocationsController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<bool> DeleteLocation(long id)
+    public async Task<bool> DeleteLocation([FromForm] long id)
     {
         return await _locationService.Delete(id);
     }

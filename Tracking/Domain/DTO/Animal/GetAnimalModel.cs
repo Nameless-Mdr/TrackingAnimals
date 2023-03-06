@@ -1,4 +1,5 @@
 ﻿using Domain.DTO.TypeAnimal;
+using Domain.DTO.VisitLocation;
 
 namespace Domain.DTO.Animal;
 
@@ -25,4 +26,6 @@ public class GetAnimalModel
     public long ChippingLocationId { get; set; }
     
     public DateTimeOffset? DeathDateTime { get; set; }
+    
+    public ICollection<GetVisitLocationModel>? VisitLocations { get; set; }
 }

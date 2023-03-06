@@ -54,7 +54,7 @@ public class AnimalsController : ControllerBase
     }
 
     [HttpDelete]
-    public async Task<bool> DeleteAnimal(long id)
+    public async Task<bool> DeleteAnimal([FromForm] long id)
     {
         return await _animalService.Delete(id);
     }

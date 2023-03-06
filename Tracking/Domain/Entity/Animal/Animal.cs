@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Entity.Location;
 
 namespace Domain.Entity.Animal;
 
@@ -38,6 +39,8 @@ public class Animal
     
     
     public virtual ICollection<Type> Types { get; set; } = null!;
+
+    public virtual ICollection<VisitLocation>? VisitLocations { get; set; }
 
     [ForeignKey($"{nameof(ChipperId)}")]
     public virtual User.User User { get; set; } = null!;

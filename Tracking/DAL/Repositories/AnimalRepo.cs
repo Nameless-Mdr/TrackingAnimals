@@ -23,7 +23,7 @@ public class AnimalRepo : IAnimalRepo
 
     public async Task<IEnumerable<Animal>> GetAllModels()
     {
-        return await _context.Animals.AsNoTracking().Include(x => x.Types).ToListAsync();
+        return await _context.Animals.AsNoTracking().Include(x => x.Types).Include(x => x.VisitLocations).ToListAsync();
     }
 
     public async Task<long> Update(Animal entity)
@@ -35,6 +35,13 @@ public class AnimalRepo : IAnimalRepo
         
         if (animal.LifeStatus == "DEAD" && entity.LifeStatus == "ALIVE")
             throw new Exception("Animal dead");
+        
+        var firstLoc = await _context.VisitLocations.AsNoTracking()
+            .OrderBy(x => x.DateTimeOfVisitLocationPoint).ThenBy(x => x.AnimalId)
+            .FirstOrDefaultAsync(x => x.AnimalId == entity.Id);
+
+        if (firstLoc != null && firstLoc.LocationPointId == entity.ChippingLocationId)
+            throw new Exception("Chipping location is first in list visited locations");
 
         animal.Weight = entity.Weight;
         animal.Length = entity.Length;

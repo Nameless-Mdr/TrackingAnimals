@@ -33,5 +33,9 @@ public class ServiceModule : IModule
         // сервисы животных
         services.AddTransient<IAnimalRepo, AnimalRepo>();
         services.AddTransient<IAnimalService, AnimalService>();
+        
+        // сервисы посещенных локаций животными
+        services.AddTransient<IVisitLocationRepo, VisitLocationRepo>();
+        services.AddTransient<IVisitLocationService, VisitLocationService>();
     }
 }

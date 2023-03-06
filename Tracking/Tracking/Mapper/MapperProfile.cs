@@ -4,6 +4,7 @@ using Domain.DTO.Animal;
 using Domain.DTO.Location;
 using Domain.DTO.TypeAnimal;
 using Domain.DTO.User;
+using Domain.DTO.VisitLocation;
 using Domain.Entity.Animal;
 using Domain.Entity.Location;
 using Domain.Entity.User;
@@ -41,5 +42,12 @@ public class MapperProfile : Profile
                 => m.MapFrom(s => s.LifeStatus.ToUpper()))
             .ForMember(d => d.DeathDateTime, m
                 => m.MapFrom(s => s.LifeStatus.ToUpper() == "DEAD" ? DateTimeOffset.UtcNow : (DateTimeOffset?)null));
+        
+        // Маппинг модели локации посещенной животным
+        CreateMap<CreateVisitLocationModel, VisitLocation>()
+            .ForMember(d => d.DateTimeOfVisitLocationPoint, m
+                => m.MapFrom(s => DateTimeOffset.UtcNow));
+        CreateMap<VisitLocation, GetVisitLocationModel>();
+        CreateMap<UpdateVisitLocationModel, VisitLocation>();
     }
 }

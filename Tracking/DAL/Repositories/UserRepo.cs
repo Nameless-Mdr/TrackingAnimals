@@ -67,4 +67,22 @@ public class UserRepo : IUserRepo
 
         return user;
     }
+
+    public async Task<User> GetUserById(int id)
+    {
+        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        
+        if(user == null)
+            throw new Exception("user not found");
+
+        return user;
+    }
+
+    public async Task<IEnumerable<User>> GetUsersByParams(string firstName = "%", string lastName = "%", string email = "%", int skip = 0, int take = 10)
+    {
+        return await _context.Users.AsNoTracking().OrderBy(x => x.Id)
+            .Where(x => x.FirstName.ToLower().Contains(firstName) && x.LastName.ToLower().Contains(lastName) &&
+                        x.Email.ToLower().Contains(email))
+            .Skip(skip).Take(take).ToListAsync();
+    }
 }

@@ -17,4 +17,6 @@ public class Location
     
     
     public virtual ICollection<Animal.Animal>? Animals { get; set; }
+    
+    public virtual ICollection<VisitLocation>? VisitLocations { get; set; }
 }
