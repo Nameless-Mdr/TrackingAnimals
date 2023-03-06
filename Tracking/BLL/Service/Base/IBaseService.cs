@@ -1,12 +1,12 @@
 ﻿namespace BLL.Service.Base;
 
-public interface IBaseService<T>
+public interface IBaseService<T, E>
 {
-    public Task<int> Create(T entity);
+    public Task<T> Create(E entity);
 
-    public Task<IEnumerable<T>> GetAllModels();
+    public Task<IEnumerable<E>> GetAllModels();
 
-    public Task<int> Update(T entity);
+    public Task<T> Update(E entity);
 
-    public Task<bool> Delete(int id);
+    public Task<bool> Delete(T id);
 }

@@ -6,7 +6,8 @@ namespace Domain.Entity.Location;
 public class Location
 {
     [Column("id")]
-    public int Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
 
     [Column("latitude")] 
     public double Latitude { get; set; }

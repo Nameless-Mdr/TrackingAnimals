@@ -13,7 +13,6 @@ public class ServiceModule : IModule
     {
         // сервисы пользователя
         services.AddTransient<IUserRepo, UserRepo>();
-
         services.AddTransient<IUserService, UserService>();
 
         // сервисы аутентификации
@@ -21,17 +20,18 @@ public class ServiceModule : IModule
 
         // сервисы сессий
         services.AddTransient<ISessionRepo, SessionRepo>();
-
         services.AddTransient<ISessionService, SessionService>();
         
         // сервисы локаций
         services.AddTransient<ILocationRepo, LocationRepo>();
-
         services.AddTransient<ILocationService, LocationService>();
         
         // сервисы типов животных
         services.AddTransient<ITypeRepo, TypeRepo>();
-
         services.AddTransient<ITypeService, TypeService>();
+        
+        // сервисы животных
+        services.AddTransient<IAnimalRepo, AnimalRepo>();
+        services.AddTransient<IAnimalService, AnimalService>();
     }
 }

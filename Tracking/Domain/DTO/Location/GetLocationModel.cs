@@ -2,7 +2,7 @@
 
 public class GetLocationModel
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
     
     public double Latitude { get; set; }
 

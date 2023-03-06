@@ -6,7 +6,8 @@ namespace Domain.Entity.Animal;
 public class Animal
 {
     [Column("id")]
-    public int Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
 
     [Column("weight")] 
     public double Weight { get; set; }
@@ -27,7 +28,7 @@ public class Animal
     public int ChipperId { get; set; }
     
     [Column("chipping_location_id")]
-    public int ChippingLocationId { get; set; }
+    public long ChippingLocationId { get; set; }
     
     [Column("chipping_date_time")]
     public DateTimeOffset ChippingDateTime { get; set; }
@@ -36,7 +37,7 @@ public class Animal
     public DateTimeOffset? DeathDateTime { get; set; }
     
     
-    public virtual ICollection<TypeAnimal> Types { get; set; } = null!;
+    public virtual ICollection<Type> Types { get; set; } = null!;
 
     [ForeignKey($"{nameof(ChipperId)}")]
     public virtual User.User User { get; set; } = null!;

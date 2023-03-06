@@ -1,8 +1,8 @@
 ﻿namespace Domain.DTO.Animal;
 
-public class CreateAnimalModel
+public class UpdateAnimalModel
 {
-    public long[] TypesId { get; set; } = null!;
+    public long Id { get; set; }
     
     public double Weight { get; set; }
     
@@ -11,8 +11,10 @@ public class CreateAnimalModel
     public double Height { get; set; }
 
     public string Gender { get; set; } = null!;
+
+    public string LifeStatus { get; set; } = null!;
     
     public int ChipperId { get; set; }
     
-    public long ChippingLocationId { get; set; } 
+    public long ChippingLocationId { get; set; }
 }

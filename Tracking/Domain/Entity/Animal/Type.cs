@@ -3,13 +3,15 @@
 namespace Domain.Entity.Animal;
 
 [Table("types", Schema = "info")]
-public class TypeAnimal
+public class Type
 {
     [Column("id")]
-    public int Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
 
-    [Column("type")] 
-    public string Type { get; set; } = null!;
+    [Column("name_type")] 
+    public string NameType { get; set; } = null!;
 
+    
     public virtual ICollection<Animal> Animals { get; set; } = null!;
 }

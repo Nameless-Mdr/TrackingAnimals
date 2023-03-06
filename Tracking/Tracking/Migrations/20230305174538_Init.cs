@@ -23,7 +23,7 @@ namespace Tracking.Migrations
                 schema: "info",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     latitude = table.Column<double>(type: "double precision", nullable: false),
                     longitude = table.Column<double>(type: "double precision", nullable: false)
@@ -40,9 +40,9 @@ namespace Tracking.Migrations
                 schema: "info",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    type = table.Column<string>(type: "text", nullable: false)
+                    name_type = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -71,7 +71,7 @@ namespace Tracking.Migrations
                 schema: "info",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     weight = table.Column<double>(type: "double precision", nullable: false),
                     length = table.Column<double>(type: "double precision", nullable: false),
@@ -79,7 +79,7 @@ namespace Tracking.Migrations
                     gender = table.Column<string>(type: "text", nullable: false),
                     life_status = table.Column<string>(type: "text", nullable: false, defaultValue: "ALIVE"),
                     chipper_id = table.Column<int>(type: "integer", nullable: false),
-                    chipping_location_id = table.Column<int>(type: "integer", nullable: false),
+                    chipping_location_id = table.Column<long>(type: "bigint", nullable: false),
                     chipping_date_time = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     death_date_time = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
@@ -135,8 +135,8 @@ namespace Tracking.Migrations
                 schema: "info",
                 columns: table => new
                 {
-                    AnimalsId = table.Column<int>(type: "integer", nullable: false),
-                    TypesId = table.Column<int>(type: "integer", nullable: false)
+                    AnimalsId = table.Column<long>(type: "bigint", nullable: false),
+                    TypesId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -177,10 +177,10 @@ namespace Tracking.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_types_type",
+                name: "IX_types_name_type",
                 schema: "info",
                 table: "types",
-                column: "type",
+                column: "name_type",
                 unique: true);
 
             migrationBuilder.CreateIndex(

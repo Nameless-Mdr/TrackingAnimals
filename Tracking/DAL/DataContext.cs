@@ -2,6 +2,7 @@
 using Domain.Entity.Location;
 using Domain.Entity.User;
 using Microsoft.EntityFrameworkCore;
+using Type = Domain.Entity.Animal.Type;
 
 namespace DAL;
 
@@ -23,36 +24,27 @@ public class DataContext : DbContext
         // creating locations
         modelBuilder.Entity<Location>().HasIndex(l => new { l.Latitude, l.Longitude }).IsUnique();
         modelBuilder.Entity<Location>()
-            .HasCheckConstraint(nameof(Location.Latitude),
-                "latitude >= -90 AND latitude <= 90",
-                n => n.HasName("CH_latitude"))
-            .HasCheckConstraint(nameof(Location.Longitude),
-                "longitude >= -180 AND longitude <= 180",
-                n => n.HasName("CH_longitude"));
+            .ToTable(t => t.HasCheckConstraint("CH_latitude", "latitude >= -90 AND latitude <= 90"))
+            .ToTable(t => t.HasCheckConstraint("CH_longitude", "longitude >= -180 AND longitude <= 180"));
         modelBuilder.Entity<Location>().HasMany(a => a.Animals).WithOne(l => l.Location)
             .OnDelete(DeleteBehavior.Restrict);
         
         // creating animals
         modelBuilder.Entity<Animal>()
-            .HasCheckConstraint(nameof(Animal.Gender),
-                "gender IN ('MALE', 'FEMALE', 'OTHER')", n => n.HasName("CH_gender"))
-            .HasCheckConstraint(nameof(Animal.LifeStatus),
-                "life_status IN ('ALIVE', 'DEAD')", n => n.HasName("CH_life_status"))
-            .HasCheckConstraint(nameof(Animal.Weight),
-                "weight > 0", n => n.HasName("CH_weight"))
-            .HasCheckConstraint(nameof(Animal.Length),
-                "length > 0", n => n.HasName("CH_length"))
-            .HasCheckConstraint(nameof(Animal.Height),
-                "height > 0", n => n.HasName("CH_height"));
+            .ToTable(t => t.HasCheckConstraint("CH_gender", "gender IN ('MALE', 'FEMALE', 'OTHER')"))
+            .ToTable(t => t.HasCheckConstraint("CH_life_status", "life_status IN ('ALIVE', 'DEAD')"))
+            .ToTable(t => t.HasCheckConstraint("CH_weight", "weight > 0"))
+            .ToTable(t => t.HasCheckConstraint("CH_length", "length > 0"))
+            .ToTable(t => t.HasCheckConstraint("CH_height", "height > 0"));
         modelBuilder.Entity<Animal>().Property(l => l.LifeStatus).HasDefaultValue("ALIVE");
         
         // creating type
-        modelBuilder.Entity<TypeAnimal>().HasIndex(t => t.Type).IsUnique();
+        modelBuilder.Entity<Type>().HasIndex(t => t.NameType).IsUnique();
 
         // creating types_animals
         modelBuilder.Entity<Animal>().HasMany(t => t.Types).WithMany(a => a.Animals)
             .UsingEntity<Dictionary<string, object>>(
-                x => x.HasOne<TypeAnimal>().WithMany().OnDelete(DeleteBehavior.Restrict),
+                x => x.HasOne<Type>().WithMany().OnDelete(DeleteBehavior.Restrict),
                 x => x.HasOne<Animal>().WithMany().OnDelete(DeleteBehavior.Cascade),
                 p => p.ToTable("types_animals", "info"));
     }
@@ -70,5 +62,5 @@ public class DataContext : DbContext
 
     public DbSet<Animal> Animals => Set<Animal>();
 
-    public DbSet<TypeAnimal> Types => Set<TypeAnimal>();
+    public DbSet<Type> Types => Set<Type>();
 }

@@ -3,7 +3,7 @@ using Domain.Entity.Location;
 
 namespace DAL.Interfaces;
 
-public interface ILocationRepo : IBaseRepo<Location>
+public interface ILocationRepo : IBaseRepo<long, Location>
 {
     
 }

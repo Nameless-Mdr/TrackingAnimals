@@ -2,7 +2,7 @@
 
 public class GetUserModel
 {
-    public int? Id { get; set; } = null!;
+    public int Id { get; set; }
 
     public string FirstName { get; set; } = null!;
 

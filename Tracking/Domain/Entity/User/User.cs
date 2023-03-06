@@ -6,6 +6,7 @@ namespace Domain.Entity.User;
 public class User
 {
     [Column("id")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     [Column("first_name")]

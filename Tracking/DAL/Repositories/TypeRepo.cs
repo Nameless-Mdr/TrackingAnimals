@@ -1,6 +1,6 @@
 ﻿using DAL.Interfaces;
-using Domain.Entity.Animal;
 using Microsoft.EntityFrameworkCore;
+using Type = Domain.Entity.Animal.Type;
 
 namespace DAL.Repositories;
 
@@ -13,7 +13,7 @@ public class TypeRepo : ITypeRepo
         _context = context;
     }
 
-    public async Task<int> Create(TypeAnimal entity)
+    public async Task<long> Create(Type entity)
     {
         await _context.AddAsync(entity);
         await _context.SaveChangesAsync();
@@ -21,12 +21,12 @@ public class TypeRepo : ITypeRepo
         return entity.Id;
     }
 
-    public async Task<IEnumerable<TypeAnimal>> GetAllModels()
+    public async Task<IEnumerable<Type>> GetAllModels()
     {
         return await _context.Types.AsNoTracking().ToListAsync();
     }
 
-    public async Task<int> Update(TypeAnimal entity)
+    public async Task<long> Update(Type entity)
     {
         _context.Update(entity);
         await _context.SaveChangesAsync();
@@ -34,14 +34,21 @@ public class TypeRepo : ITypeRepo
         return entity.Id;
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> Delete(long id)
+    {
+        var type = await GetTypeById(id);
+
+        _context.Types.Remove(type);
+        return await _context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<Type> GetTypeById(long id)
     {
         var type = await _context.Types.FirstOrDefaultAsync(x => x.Id == id);
 
         if (type == null)
             throw new Exception("Type with such id not found");
 
-        _context.Types.Remove(type);
-        return await _context.SaveChangesAsync() > 0;
+        return type;
     }
 }

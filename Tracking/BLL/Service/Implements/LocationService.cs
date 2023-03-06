@@ -13,7 +13,7 @@ public class LocationService : ILocationService
         _locationRepo = locationRepo;
     }
 
-    public Task<int> Create(Location entity)
+    public Task<long> Create(Location entity)
     {
         return _locationRepo.Create(entity);
     }
@@ -23,12 +23,12 @@ public class LocationService : ILocationService
         return _locationRepo.GetAllModels();
     }
 
-    public Task<int> Update(Location entity)
+    public Task<long> Update(Location entity)
     {
         return _locationRepo.Update(entity);
     }
 
-    public Task<bool> Delete(int id)
+    public Task<bool> Delete(long id)
     {
         return _locationRepo.Delete(id);
     }

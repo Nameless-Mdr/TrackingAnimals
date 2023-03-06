@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Tracking.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230305134307_Init")]
+    [Migration("20230305174538_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -25,13 +25,13 @@ namespace Tracking.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AnimalTypeAnimal", b =>
+            modelBuilder.Entity("AnimalType", b =>
                 {
-                    b.Property<int>("AnimalsId")
-                        .HasColumnType("integer");
+                    b.Property<long>("AnimalsId")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("TypesId")
-                        .HasColumnType("integer");
+                    b.Property<long>("TypesId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("AnimalsId", "TypesId");
 
@@ -42,12 +42,12 @@ namespace Tracking.Migrations
 
             modelBuilder.Entity("Domain.Entity.Animal.Animal", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<int>("ChipperId")
                         .HasColumnType("integer")
@@ -57,8 +57,8 @@ namespace Tracking.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("chipping_date_time");
 
-                    b.Property<int>("ChippingLocationId")
-                        .HasColumnType("integer")
+                    b.Property<long>("ChippingLocationId")
+                        .HasColumnType("bigint")
                         .HasColumnName("chipping_location_id");
 
                     b.Property<DateTimeOffset?>("DeathDateTime")
@@ -97,40 +97,35 @@ namespace Tracking.Migrations
 
                     b.ToTable("animals", "info", t =>
                         {
-                            t.HasCheckConstraint("Gender", "gender IN ('MALE', 'FEMALE', 'OTHER')")
-                                .HasName("CH_gender");
+                            t.HasCheckConstraint("CH_gender", "gender IN ('MALE', 'FEMALE', 'OTHER')");
 
-                            t.HasCheckConstraint("Height", "height > 0")
-                                .HasName("CH_height");
+                            t.HasCheckConstraint("CH_height", "height > 0");
 
-                            t.HasCheckConstraint("Length", "length > 0")
-                                .HasName("CH_length");
+                            t.HasCheckConstraint("CH_length", "length > 0");
 
-                            t.HasCheckConstraint("LifeStatus", "life_status IN ('ALIVE', 'DEAD')")
-                                .HasName("CH_life_status");
+                            t.HasCheckConstraint("CH_life_status", "life_status IN ('ALIVE', 'DEAD')");
 
-                            t.HasCheckConstraint("Weight", "weight > 0")
-                                .HasName("CH_weight");
+                            t.HasCheckConstraint("CH_weight", "weight > 0");
                         });
                 });
 
-            modelBuilder.Entity("Domain.Entity.Animal.TypeAnimal", b =>
+            modelBuilder.Entity("Domain.Entity.Animal.Type", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Type")
+                    b.Property<string>("NameType")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("type");
+                        .HasColumnName("name_type");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Type")
+                    b.HasIndex("NameType")
                         .IsUnique();
 
                     b.ToTable("types", "info");
@@ -138,12 +133,12 @@ namespace Tracking.Migrations
 
             modelBuilder.Entity("Domain.Entity.Location.Location", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                        .HasColumnType("bigint")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<double>("Latitude")
                         .HasColumnType("double precision")
@@ -160,11 +155,9 @@ namespace Tracking.Migrations
 
                     b.ToTable("locations", "info", t =>
                         {
-                            t.HasCheckConstraint("Latitude", "latitude >= -90 AND latitude <= 90")
-                                .HasName("CH_latitude");
+                            t.HasCheckConstraint("CH_latitude", "latitude >= -90 AND latitude <= 90");
 
-                            t.HasCheckConstraint("Longitude", "longitude >= -180 AND longitude <= 180")
-                                .HasName("CH_longitude");
+                            t.HasCheckConstraint("CH_longitude", "longitude >= -180 AND longitude <= 180");
                         });
                 });
 
@@ -235,7 +228,7 @@ namespace Tracking.Migrations
                     b.ToTable("user_session", "auth");
                 });
 
-            modelBuilder.Entity("AnimalTypeAnimal", b =>
+            modelBuilder.Entity("AnimalType", b =>
                 {
                     b.HasOne("Domain.Entity.Animal.Animal", null)
                         .WithMany()
@@ -243,7 +236,7 @@ namespace Tracking.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entity.Animal.TypeAnimal", null)
+                    b.HasOne("Domain.Entity.Animal.Type", null)
                         .WithMany()
                         .HasForeignKey("TypesId")
                         .OnDelete(DeleteBehavior.Restrict)

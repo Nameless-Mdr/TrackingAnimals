@@ -5,5 +5,5 @@ namespace Domain.DTO.TypeAnimal;
 public class CreateTypeModel
 {
     [MinLength(3)]
-    public string Type { get; set; } = null!;
+    public string NameType { get; set; } = null!;
 }

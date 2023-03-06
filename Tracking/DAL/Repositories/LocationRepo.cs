@@ -13,7 +13,7 @@ public class LocationRepo : ILocationRepo
         _context = context;
     }
 
-    public async Task<int> Create(Location entity)
+    public async Task<long> Create(Location entity)
     {
         await _context.Locations.AddAsync(entity);
         await _context.SaveChangesAsync();
@@ -26,7 +26,7 @@ public class LocationRepo : ILocationRepo
         return await _context.Locations.AsNoTracking().ToListAsync();
     }
 
-    public async Task<int> Update(Location entity)
+    public async Task<long> Update(Location entity)
     {
         _context.Locations.Update(entity);
         await _context.SaveChangesAsync();
@@ -34,7 +34,7 @@ public class LocationRepo : ILocationRepo
         return entity.Id;
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> Delete(long id)
     {
         var location = await _context.Locations.FirstOrDefaultAsync(x => x.Id == id);
 
