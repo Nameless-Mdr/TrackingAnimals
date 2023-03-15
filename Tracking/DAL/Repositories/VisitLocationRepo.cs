@@ -106,4 +106,12 @@ public class VisitLocationRepo : IVisitLocationRepo
         
         return await _context.SaveChangesAsync() > 0;
     }
+
+    public async Task<IEnumerable<VisitLocation>> GetVisitLocationByParams(DateTimeOffset? startDate, DateTimeOffset? endDate, int skip = 0, int take = 10)
+    {
+        return await _context.VisitLocations.AsNoTracking().OrderBy(x => x.Id)
+            .Where(x => (startDate == null || x.DateTimeOfVisitLocationPoint >= startDate)
+                        && (endDate == null || x.DateTimeOfVisitLocationPoint <= endDate))
+            .Skip(skip).Take(take).ToListAsync();
+    }
 }

@@ -32,4 +32,9 @@ public class VisitLocationService : IVisitLocationService
     {
         return await _visitLocationRepo.Delete(id);
     }
+
+    public async Task<IEnumerable<VisitLocation>> GetVisitLocationByParams(DateTimeOffset? startDate, DateTimeOffset? endDate, int skip = 0, int take = 10)
+    {
+        return await _visitLocationRepo.GetVisitLocationByParams(startDate, endDate, skip, take);
+    }
 }

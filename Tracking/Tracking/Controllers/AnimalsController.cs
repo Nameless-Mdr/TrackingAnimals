@@ -39,11 +39,19 @@ public class AnimalsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<GetAnimalModel>> GetAllAnimals()
+    public async Task<GetAnimalModel> GetAnimalById(long id)
     {
-        var animals = await _animalService.GetAllModels();
-        var models = animals.Select(x => _mapper.Map<GetAnimalModel>(x));
-        return models;
+        var animal = await _animalService.GetAnimalById(id);
+        return _mapper.Map<GetAnimalModel>(animal);
+    }
+
+    [HttpGet]
+    public async Task<IEnumerable<GetAnimalModel>> GetAnimalsByParams(DateTimeOffset? startDate, DateTimeOffset? endDate, int chipperId = 0,
+        int chippingLocationId = 0, string lifeStatus = "", string gender = "", int skip = 0, int take = 10)
+    {
+        var animals = await _animalService.GetAnimalByParams(startDate, endDate, chipperId, chippingLocationId, lifeStatus,
+            gender, skip, take == 0 ? 10 : take);
+        return animals.Select(x => _mapper.Map<GetAnimalModel>(x));
     }
 
     [HttpPut]

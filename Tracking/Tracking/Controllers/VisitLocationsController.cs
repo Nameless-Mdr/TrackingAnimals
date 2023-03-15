@@ -28,9 +28,11 @@ public class VisitLocationsController : Controller
     }
 
     [HttpGet]
-    public async Task<IEnumerable<GetVisitLocationModel>> GetAllVisitLocations()
+    public async Task<IEnumerable<GetVisitLocationModel>> GetVisitLocationsByParams(DateTimeOffset? startDate,
+        DateTimeOffset? endDate, int skip = 0, int take = 10)
     {
-        var locations = await _visitLocationService.GetAllModels();
+        var locations =
+            await _visitLocationService.GetVisitLocationByParams(startDate, endDate, skip, take == 0 ? 10 : take);
         return locations.Select(x => _mapper.Map<GetVisitLocationModel>(x));
     }
 
