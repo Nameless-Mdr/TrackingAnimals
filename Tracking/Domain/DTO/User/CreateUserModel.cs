@@ -13,11 +13,11 @@ public class CreateUserModel
     [EmailAddress]
     public string Email { get; set; } = null!;
 
-    //[DataType(DataType.Password)]
+    [DataType(DataType.Password)]
     [MinLength(5)]
     public string Password { get; set; } = null!;
     
-    //[DataType(DataType.Password)]
+    [DataType(DataType.Password)]
     [MinLength(5)]
     [Compare(nameof(Password))]
     public string RetryPassword { get; set; } = null!;

@@ -32,4 +32,16 @@ public class AnimalService : IAnimalService
     {
         return await _animalRepo.Delete(id);
     }
+
+    public async Task<IEnumerable<Animal>> GetAnimalByParams(DateTimeOffset? startDate, DateTimeOffset? endDate, int chipperId = 0,
+        int chippingLocationId = 0, string lifeStatus = "", string gender = "", int skip = 0, int take = 10)
+    {
+        return await _animalRepo.GetAnimalByParams(startDate, endDate, chipperId, chippingLocationId, lifeStatus,
+            gender, skip, take);
+    }
+
+    public async Task<Animal> GetAnimalById(long id)
+    {
+        return await _animalRepo.GetAnimalById(id);
+    }
 }

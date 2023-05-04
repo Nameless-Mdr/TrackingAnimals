@@ -33,7 +33,7 @@ public class UserService : IUserService
         return await _userRepo.Delete(id);
     }
 
-    public async Task<IEnumerable<User>> GetUsersByParams(string firstName = "%", string lastName = "%", string email = "%", int skip = 0, int take = 10)
+    public async Task<IEnumerable<User>> GetUsersByParams(string firstName, string lastName, string email, int skip, int take)
     {
         return await _userRepo.GetUsersByParams(firstName, lastName, email, skip, take);
     }

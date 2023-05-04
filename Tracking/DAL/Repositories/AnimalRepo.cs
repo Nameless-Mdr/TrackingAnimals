@@ -69,4 +69,31 @@ public class AnimalRepo : IAnimalRepo
         _context.Animals.Remove(animal);
         return await _context.SaveChangesAsync() > 0;
     }
+
+    public async Task<IEnumerable<Animal>> GetAnimalByParams(DateTimeOffset? startDate, DateTimeOffset? endDate,
+        int chipperId = 0, int chippingLocationId = 0,
+        string lifeStatus = "", string gender = "", int skip = 0, int take = 10)
+    {
+        return await _context.Animals.AsNoTracking()
+            .Include(x => x.Types).Include(x => x.VisitLocations)
+            .OrderBy(x => x.Id)
+            .Where(x => (startDate == null || x.ChippingDateTime >= startDate)
+                        && (endDate == null || x.ChippingDateTime <= endDate)
+                        && (chipperId == 0 || x.ChipperId == chipperId)
+                        && (chippingLocationId == 0 || x.ChippingLocationId == chippingLocationId)
+                        && (string.IsNullOrEmpty(lifeStatus) || x.LifeStatus == lifeStatus.ToUpper())
+                        && (string.IsNullOrEmpty(gender) || x.Gender == gender.ToUpper()))
+            .Skip(skip).Take(take).ToListAsync();
+    }
+
+    public async Task<Animal> GetAnimalById(long id)
+    {
+        var animal = await _context.Animals.AsNoTracking().Include(x => x.Types).Include(x => x.VisitLocations)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (animal == null)
+            throw new Exception("Animal with such id not found");
+
+        return animal;
+    }
 }

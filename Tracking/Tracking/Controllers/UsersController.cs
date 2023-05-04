@@ -44,26 +44,16 @@ public class UsersController : ControllerBase
     {
         var userId = User.GetClaimValue<int>(ClaimNames.Id);
         
-        if (userId != default)
-            throw new Exception("you are already authorized");
+        if (userId == default)
+            throw new Exception("you are not authorized");
 
         return _mapper.Map<GetUserModel>(await _userService.GetUserById(userId));
     }
 
     [HttpGet]
-    public async Task<IEnumerable<GetUserModel>> GetAllUsers()
+    public async Task<IEnumerable<GetUserModel>> GetUsersByParams(string firstName = "", string lastName = "",
+        string email = "", int skip = 0, int take = 10)
     {
-        var users = await _userService.GetAllModels();
-        return users.Select(item => _mapper.Map<GetUserModel>(item));
-    }
-
-    [HttpGet]
-    public async Task<IEnumerable<GetUserModel>> GetUsersByParams(string? firstName, string? lastName,
-        string? email, int skip, int take)
-    {
-        firstName = string.IsNullOrEmpty(firstName) ? "%" : lastName;
-        lastName = string.IsNullOrEmpty(lastName) ? "%" : lastName;
-        email = string.IsNullOrEmpty(email) ? "%" : email;
         var users = await _userService.GetUsersByParams(firstName, lastName, email, skip, take == 0 ? 10 : take);
         return users.Select(item => _mapper.Map<GetUserModel>(item));
     }
