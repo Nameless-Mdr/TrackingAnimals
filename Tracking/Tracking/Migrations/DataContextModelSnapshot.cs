@@ -232,17 +232,32 @@ namespace Tracking.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("Created")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created");
+                        .HasColumnName("created_date");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<DateTimeOffset>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expiration_date");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ip_address");
+
+                    b.Property<bool>("IsInvalidated")
                         .HasColumnType("boolean")
-                        .HasColumnName("is_active");
+                        .HasColumnName("is_invalidated");
 
-                    b.Property<Guid>("RefreshToken")
-                        .HasColumnType("uuid")
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("refresh_token");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")

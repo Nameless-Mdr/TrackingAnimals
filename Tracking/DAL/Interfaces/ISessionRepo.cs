@@ -8,7 +8,9 @@ public interface ISessionRepo
 
     public Task<UserSession> GetSessionById(Guid id);
 
-    public Task<UserSession> GetSessionByRefreshToken(Guid refreshToken);
+    public Task<UserSession> GetSessionByTokens(string expiredToken, string refreshToken);
 
-    public Task<Guid> UpdateRefreshToken(UserSession updateSession);
+    public Task<UserSession> GetSessionByIpAddress(string expiredToken, string ipAddress);
+        
+    public Task<Guid> Update(UserSession updateSession);
 }

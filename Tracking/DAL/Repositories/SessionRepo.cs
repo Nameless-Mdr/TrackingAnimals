@@ -27,23 +27,36 @@ public class SessionRepo : ISessionRepo
         var session = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == id);
 
         if (session == null)
-            throw new Exception("session is not found");
+            throw new Exception("Session is not found");
 
         return session;
     }
 
-    public async Task<UserSession> GetSessionByRefreshToken(Guid refreshToken)
+    public async Task<UserSession> GetSessionByTokens(string expiredToken, string refreshToken)
     {
-        var session = await _context.UserSessions.Include(x 
-            => x.User).FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+        var session = await _context.UserSessions
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.Token == expiredToken && x.RefreshToken == refreshToken);
 
         if (session == null)
-            throw new Exception("session is not found");
+            throw new Exception("Session is not found");
 
         return session;
     }
 
-    public async Task<Guid> UpdateRefreshToken(UserSession updateSession)
+    public async Task<UserSession> GetSessionByIpAddress(string expiredToken, string ipAddress)
+    {
+        var session = await _context.UserSessions
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.Token == expiredToken && x.IpAddress == ipAddress);
+
+        if (session == null)
+            throw new Exception("Session is not found");
+
+        return session;
+    }
+
+    public async Task<Guid> Update(UserSession updateSession)
     {
         _context.UserSessions.Update(updateSession);
 

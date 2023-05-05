@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.Service.Interfaces;
 using Common;
+using Common.ClaimHelper;
 using Common.Const;
 using Domain.DTO.User;
 using Domain.Entity.User;

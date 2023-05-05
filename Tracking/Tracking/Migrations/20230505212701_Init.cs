@@ -113,10 +113,13 @@ namespace Tracking.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<int>(type: "integer", nullable: false),
-                    refresh_token = table.Column<Guid>(type: "uuid", nullable: false),
-                    created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    is_active = table.Column<bool>(type: "boolean", nullable: false)
+                    token = table.Column<string>(type: "text", nullable: false),
+                    refresh_token = table.Column<string>(type: "text", nullable: false),
+                    created_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    expiration_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ip_address = table.Column<string>(type: "text", nullable: false),
+                    is_invalidated = table.Column<bool>(type: "boolean", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -155,6 +158,36 @@ namespace Tracking.Migrations
                         principalTable: "types",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "visit_locations",
+                schema: "info",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    date_time_of_visit_location_point = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    animal_id = table.Column<long>(type: "bigint", nullable: false),
+                    location_point_id = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_visit_locations", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_visit_locations_animals_animal_id",
+                        column: x => x.animal_id,
+                        principalSchema: "info",
+                        principalTable: "animals",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_visit_locations_locations_location_point_id",
+                        column: x => x.location_point_id,
+                        principalSchema: "info",
+                        principalTable: "locations",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -201,6 +234,18 @@ namespace Tracking.Migrations
                 table: "users",
                 column: "email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_visit_locations_animal_id",
+                schema: "info",
+                table: "visit_locations",
+                column: "animal_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_visit_locations_location_point_id",
+                schema: "info",
+                table: "visit_locations",
+                column: "location_point_id");
         }
 
         /// <inheritdoc />
@@ -215,11 +260,15 @@ namespace Tracking.Migrations
                 schema: "auth");
 
             migrationBuilder.DropTable(
-                name: "animals",
+                name: "visit_locations",
                 schema: "info");
 
             migrationBuilder.DropTable(
                 name: "types",
+                schema: "info");
+
+            migrationBuilder.DropTable(
+                name: "animals",
                 schema: "info");
 
             migrationBuilder.DropTable(
