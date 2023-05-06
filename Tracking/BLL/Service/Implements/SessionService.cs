@@ -28,9 +28,9 @@ public class SessionService : ISessionService
         return await _sessionRepo.GetSessionByTokens(expiredToken, refreshToken);
     }
 
-    public async Task<UserSession> GetSessionByIpAddress(string expiredToken, string ipAddress)
+    public async Task<UserSession> GetSessionByAccessToken(string expiredToken)
     {
-        return await _sessionRepo.GetSessionByIpAddress(expiredToken, ipAddress);
+        return await _sessionRepo.GetSessionByAccessToken(expiredToken);
     }
 
     public async Task<Guid> Update(UserSession updateSession)

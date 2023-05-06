@@ -10,7 +10,7 @@ public interface ISessionRepo
 
     public Task<UserSession> GetSessionByTokens(string expiredToken, string refreshToken);
 
-    public Task<UserSession> GetSessionByIpAddress(string expiredToken, string ipAddress);
+    public Task<UserSession> GetSessionByAccessToken(string expiredToken);
         
     public Task<Guid> Update(UserSession updateSession);
 }

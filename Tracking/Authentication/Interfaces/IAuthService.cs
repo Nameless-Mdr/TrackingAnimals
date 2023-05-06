@@ -8,5 +8,5 @@ public interface IAuthService
 
     public Task<TokenModel> GetTokenByRefreshToken(RefreshTokenRequestModel refreshToken);
 
-    public Task<bool> IsTokenValid(string accessToken, string ipAddress);
+    public Task<bool> IsTokenValid(string accessToken);
 }

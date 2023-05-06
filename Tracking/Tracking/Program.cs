@@ -1,4 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Authentication;
 using Authentication;
+using Authentication.Interfaces;
 using BLL.Service;
 using Config.Configs;
 using DAL;
@@ -7,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Tracking.Mapper;
-using Tracking.Middleware;
 
 class Program
 {
@@ -79,9 +81,18 @@ class Program
                     ClockSkew = TimeSpan.Zero,
                 };
                 jwtOptions.Events = new JwtBearerEvents();
-                jwtOptions.Events.OnTokenValidated = async (context) =>
+                jwtOptions.Events.OnTokenValidated = async context =>
                 {
-                    var ipAdress = context.Request.HttpContext.Connection.RemoteIpAddress.ToString();
+                    var authService = context.Request.HttpContext.RequestServices.GetService<IAuthService>();
+                    if (authService == null)
+                    {
+                        throw new InvalidCredentialException();
+                    }
+                    var token = context.SecurityToken as JwtSecurityToken;
+                    if (!await authService.IsTokenValid(token.RawData))
+                    {
+                        context.Fail("Invalid token");
+                    }
                 };
             });
 
@@ -114,8 +125,6 @@ class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-
-        app.UseTokenValidator();
 
         app.MapControllers();
 

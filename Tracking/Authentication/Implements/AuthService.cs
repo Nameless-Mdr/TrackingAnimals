@@ -41,7 +41,7 @@ public class AuthService : IAuthService
                 new Claim("email", user.Email),
                 new Claim("password_hash", user.PasswordHash)
             },
-            expires: dateNow.AddMinutes(_authConfig.LifeTimeAccessToken),
+            expires: dateNow.AddSeconds(_authConfig.LifeTimeAccessToken),
             signingCredentials: new SigningCredentials(_authConfig.SymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
         );
 
@@ -63,7 +63,7 @@ public class AuthService : IAuthService
         {
             Id = Guid.NewGuid(),
             CreatedDate = DateTimeOffset.UtcNow,
-            ExpirationDate = DateTimeOffset.UtcNow.AddMinutes(_authConfig.LifeTimeRefreshToken),
+            ExpirationDate = DateTimeOffset.UtcNow.AddSeconds(_authConfig.LifeTimeRefreshToken),
             IpAddress = ipAddress,
             IsInvalidated = false,
             Token = token,
@@ -110,9 +110,9 @@ public class AuthService : IAuthService
         return await GetTokens(userSession.User);
     }
 
-    public async Task<bool> IsTokenValid(string accessToken, string ipAddress)
+    public async Task<bool> IsTokenValid(string accessToken)
     {
-        var isValid = _sessionService.GetSessionByIpAddress(accessToken, ipAddress) != null;
+        var isValid = await _sessionService.GetSessionByAccessToken(accessToken) != null;
         return await Task.FromResult(isValid);
     }
 
