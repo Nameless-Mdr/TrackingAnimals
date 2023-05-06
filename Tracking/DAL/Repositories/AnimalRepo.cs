@@ -1,5 +1,6 @@
 ﻿using DAL.Interfaces;
 using Domain.Entity.Animal;
+using Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories;
@@ -33,7 +34,7 @@ public class AnimalRepo : IAnimalRepo
         if (animal == null)
             throw new Exception("Animal with such id not found");
         
-        if (animal.LifeStatus == "DEAD" && entity.LifeStatus == "ALIVE")
+        if (animal.LifeStatus == LifeStatus.DEAD.ToString() && entity.LifeStatus == LifeStatus.ALIVE.ToString())
             throw new Exception("Animal dead");
         
         var firstLoc = await _context.VisitLocations.AsNoTracking()

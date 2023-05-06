@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Entity.Location;
+using Domain.Enum;
 
 namespace Domain.Entity.Animal;
 
@@ -36,7 +37,6 @@ public class Animal
     
     [Column("death_date_time")]
     public DateTimeOffset? DeathDateTime { get; set; }
-    
     
     public virtual ICollection<Type> Types { get; set; } = null!;
 

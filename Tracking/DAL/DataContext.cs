@@ -1,6 +1,7 @@
 ﻿using Domain.Entity.Animal;
 using Domain.Entity.Location;
 using Domain.Entity.User;
+using Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 using Type = Domain.Entity.Animal.Type;
 
@@ -32,11 +33,11 @@ public class DataContext : DbContext
         // creating animals
         modelBuilder.Entity<Animal>()
             .ToTable(t => t.HasCheckConstraint("CH_gender", "gender IN ('MALE', 'FEMALE', 'OTHER')"))
-            .ToTable(t => t.HasCheckConstraint("CH_life_status", "life_status IN ('ALIVE', 'DEAD')"))
+            .ToTable(t => t.HasCheckConstraint("CH_life_status", $"life_status IN ('{nameof(LifeStatus.ALIVE)}', '{nameof(LifeStatus.DEAD)}')"))
             .ToTable(t => t.HasCheckConstraint("CH_weight", "weight > 0"))
             .ToTable(t => t.HasCheckConstraint("CH_length", "length > 0"))
             .ToTable(t => t.HasCheckConstraint("CH_height", "height > 0"));
-        modelBuilder.Entity<Animal>().Property(l => l.LifeStatus).HasDefaultValue("ALIVE");
+        modelBuilder.Entity<Animal>().Property(l => l.LifeStatus).HasDefaultValue(nameof(LifeStatus.ALIVE));
         
         // creating type
         modelBuilder.Entity<Type>().HasIndex(t => t.NameType).IsUnique();

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BLL.Service.Interfaces;
 using Domain.DTO.TypeAnimal;
-using Domain.Entity.Animal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Type = Domain.Entity.Animal.Type;
