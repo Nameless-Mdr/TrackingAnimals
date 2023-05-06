@@ -13,7 +13,9 @@ public class AuthConfig
 
     public string Key { get; set; } = string.Empty;
 
-    public int LifeTime { get; set; }
+    public int LifeTimeAccessToken { get; set; }
+    
+    public int LifeTimeRefreshToken { get; set; }
 
     public SymmetricSecurityKey SymmetricSecurityKey()
         => new(Encoding.UTF8.GetBytes(Key));

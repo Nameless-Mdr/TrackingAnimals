@@ -8,7 +8,7 @@ namespace DAL;
 
 public class DataContext : DbContext
 {
-    public DataContext(DbContextOptions<DataContext> optionts) : base(optionts)
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
         
     }

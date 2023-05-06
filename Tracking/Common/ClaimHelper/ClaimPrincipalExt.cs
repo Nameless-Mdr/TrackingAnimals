@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
-using Microsoft.VisualBasic.CompilerServices;
 
-namespace Common;
+namespace Common.ClaimHelper;
 
 public static class ClaimPrincipalExt
 {
@@ -10,7 +9,7 @@ public static class ClaimPrincipalExt
         var value = user.Claims.FirstOrDefault(x => x.Type == claim)?.Value;
 
         if (value != null)
-            return Utils.Convert<T>(value);
+            return value.Convert<T>();
 
         return default;
 

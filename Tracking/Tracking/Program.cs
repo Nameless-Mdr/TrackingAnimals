@@ -1,3 +1,7 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Authentication;
+using Authentication;
+using Authentication.Interfaces;
 using BLL.Service;
 using Config.Configs;
 using DAL;
@@ -6,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Tracking.Mapper;
-using Tracking.Middleware;
 
 class Program
 {
@@ -15,10 +18,9 @@ class Program
         var builder = WebApplication.CreateBuilder(args);
 
         var authSection = builder.Configuration.GetSection(AuthConfig.Position);
-
         var authConfig = authSection.Get<AuthConfig>();
-
         builder.Services.Configure<AuthConfig>(authSection);
+        builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
@@ -59,13 +61,15 @@ class Program
 
         builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
+        (new ServiceDal()).Registry(builder.Services);
         (new ServiceModule()).Registry(builder.Services);
+        (new ServiceAuth()).Registry(builder.Services);
 
         builder.Services.AddAuthentication(o => { o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; })
-            .AddJwtBearer(o =>
+            .AddJwtBearer(jwtOptions =>
             {
-                o.RequireHttpsMetadata = false;
-                o.TokenValidationParameters = new TokenValidationParameters
+                jwtOptions.RequireHttpsMetadata = false;
+                jwtOptions.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidIssuer = authConfig!.Issuer,
@@ -75,6 +79,20 @@ class Program
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = authConfig.SymmetricSecurityKey(),
                     ClockSkew = TimeSpan.Zero,
+                };
+                jwtOptions.Events = new JwtBearerEvents();
+                jwtOptions.Events.OnTokenValidated = async context =>
+                {
+                    var authService = context.Request.HttpContext.RequestServices.GetService<IAuthService>();
+                    if (authService == null)
+                    {
+                        throw new InvalidCredentialException();
+                    }
+                    var token = context.SecurityToken as JwtSecurityToken;
+                    if (!await authService.IsTokenValid(token.RawData))
+                    {
+                        context.Fail("Invalid token");
+                    }
                 };
             });
 
@@ -107,8 +125,6 @@ class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-
-        app.UseTokenValidator();
 
         app.MapControllers();
 

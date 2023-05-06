@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Tracking.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230305174538_Init")]
+    [Migration("20230505212701_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -161,6 +161,36 @@ namespace Tracking.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Domain.Entity.Location.VisitLocation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AnimalId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("animal_id");
+
+                    b.Property<DateTimeOffset>("DateTimeOfVisitLocationPoint")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_time_of_visit_location_point");
+
+                    b.Property<long>("LocationPointId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("location_point_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AnimalId");
+
+                    b.HasIndex("LocationPointId");
+
+                    b.ToTable("visit_locations", "info");
+                });
+
             modelBuilder.Entity("Domain.Entity.User.User", b =>
                 {
                     b.Property<int>("Id")
@@ -205,17 +235,32 @@ namespace Tracking.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTimeOffset>("Created")
+                    b.Property<DateTimeOffset>("CreatedDate")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created");
+                        .HasColumnName("created_date");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<DateTimeOffset>("ExpirationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expiration_date");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ip_address");
+
+                    b.Property<bool>("IsInvalidated")
                         .HasColumnType("boolean")
-                        .HasColumnName("is_active");
+                        .HasColumnName("is_invalidated");
 
-                    b.Property<Guid>("RefreshToken")
-                        .HasColumnType("uuid")
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("refresh_token");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -262,6 +307,25 @@ namespace Tracking.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entity.Location.VisitLocation", b =>
+                {
+                    b.HasOne("Domain.Entity.Animal.Animal", "Animal")
+                        .WithMany("VisitLocations")
+                        .HasForeignKey("AnimalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entity.Location.Location", "Location")
+                        .WithMany("VisitLocations")
+                        .HasForeignKey("LocationPointId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Animal");
+
+                    b.Navigation("Location");
+                });
+
             modelBuilder.Entity("Domain.Entity.User.UserSession", b =>
                 {
                     b.HasOne("Domain.Entity.User.User", "User")
@@ -273,9 +337,16 @@ namespace Tracking.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entity.Animal.Animal", b =>
+                {
+                    b.Navigation("VisitLocations");
+                });
+
             modelBuilder.Entity("Domain.Entity.Location.Location", b =>
                 {
                     b.Navigation("Animals");
+
+                    b.Navigation("VisitLocations");
                 });
 
             modelBuilder.Entity("Domain.Entity.User.User", b =>

@@ -1,5 +1,5 @@
-﻿using BLL.Models.Token;
-using BLL.Service.Interfaces;
+﻿using Authentication.Interfaces;
+using Authentication.Models.Token;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Tracking.Controllers;
@@ -16,14 +16,24 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<TokenModel> Token(TokenRequestModel model)
+    public async Task<IActionResult> Token([FromBody] TokenRequestModel model)
     {
-        return await _authService.GetToken(model.Login, model.Password);
+        if (!ModelState.IsValid)
+            return BadRequest(new TokenModel() {IsSuccess = false, Reason = "Email and password must be provided."});
+        var authResponse = await _authService.GetToken(model);
+        if (authResponse == null)
+            return Unauthorized();
+        return Ok(authResponse);
     }
 
     [HttpPost]
-    public async Task<TokenModel> RefreshToken(RefreshTokenRequestModel model)
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestModel model)
     {
-        return await _authService.GetTokenByRefreshToken(model.RefreshToken);
+        if (!ModelState.IsValid)
+            return BadRequest(new TokenModel() {IsSuccess = false, Reason = "Tokens must be provided."});
+        var authResponse = await _authService.GetTokenByRefreshToken(model);
+        if (authResponse == null)
+            return Unauthorized();
+        return Ok(authResponse);
     }
 }

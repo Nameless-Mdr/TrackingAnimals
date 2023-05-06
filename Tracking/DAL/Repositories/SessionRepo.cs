@@ -1,5 +1,6 @@
 ﻿using DAL.Interfaces;
 using Domain.Entity.User;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories;
@@ -7,10 +8,12 @@ namespace DAL.Repositories;
 public class SessionRepo : ISessionRepo
 {
     private readonly DataContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SessionRepo(DataContext context)
+    public SessionRepo(DataContext context, IHttpContextAccessor httpContextAccessor)
     {
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
     }
     
     public async Task<Guid> InsertSession(UserSession session)
@@ -26,24 +29,32 @@ public class SessionRepo : ISessionRepo
     {
         var session = await _context.UserSessions.FirstOrDefaultAsync(x => x.Id == id);
 
-        if (session == null)
-            throw new Exception("session is not found");
-
         return session;
     }
 
-    public async Task<UserSession> GetSessionByRefreshToken(Guid refreshToken)
+    public async Task<UserSession> GetSessionByTokens(string expiredToken, string refreshToken)
     {
-        var session = await _context.UserSessions.Include(x 
-            => x.User).FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
-
-        if (session == null)
-            throw new Exception("session is not found");
+        var ipAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+        var session = await _context.UserSessions
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.Token == expiredToken
+                                      && x.RefreshToken == refreshToken
+                                      && x.IpAddress == ipAddress
+                                      && x.IsInvalidated == false);
 
         return session;
     }
 
-    public async Task<Guid> UpdateRefreshToken(UserSession updateSession)
+    public async Task<UserSession> GetSessionByAccessToken(string expiredToken)
+    {
+        var ipAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
+        var session = await _context.UserSessions
+            .FirstOrDefaultAsync(x => x.Token == expiredToken && x.IpAddress == ipAddress);
+
+        return session;
+    }
+
+    public async Task<Guid> Update(UserSession updateSession)
     {
         _context.UserSessions.Update(updateSession);
 
