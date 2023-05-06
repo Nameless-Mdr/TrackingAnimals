@@ -32,12 +32,12 @@ public class DataContext : DbContext
         
         // creating animals
         modelBuilder.Entity<Animal>()
-            .ToTable(t => t.HasCheckConstraint("CH_gender", "gender IN ('MALE', 'FEMALE', 'OTHER')"))
-            .ToTable(t => t.HasCheckConstraint("CH_life_status", $"life_status IN ('{nameof(LifeStatus.ALIVE)}', '{nameof(LifeStatus.DEAD)}')"))
+            .ToTable(t => t.HasCheckConstraint("CH_gender", $"gender IN ('{Gender.MALE.ToString()}', '{Gender.FEMALE.ToString()}', '{Gender.OTHER.ToString()}')"))
+            .ToTable(t => t.HasCheckConstraint("CH_life_status", $"life_status IN ('{LifeStatus.ALIVE.ToString()}', '{LifeStatus.DEAD.ToString()}')"))
             .ToTable(t => t.HasCheckConstraint("CH_weight", "weight > 0"))
             .ToTable(t => t.HasCheckConstraint("CH_length", "length > 0"))
             .ToTable(t => t.HasCheckConstraint("CH_height", "height > 0"));
-        modelBuilder.Entity<Animal>().Property(l => l.LifeStatus).HasDefaultValue(nameof(LifeStatus.ALIVE));
+        modelBuilder.Entity<Animal>().Property(l => l.LifeStatus).HasDefaultValue(LifeStatus.ALIVE.ToString());
         
         // creating type
         modelBuilder.Entity<Type>().HasIndex(t => t.NameType).IsUnique();
